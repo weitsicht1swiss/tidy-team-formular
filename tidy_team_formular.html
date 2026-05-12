@@ -483,17 +483,39 @@
 const canvas = document.getElementById('signatureCanvas');
 const ctx = canvas.getContext('2d');
 let drawing = false;
+let signatureImageBackup = null; // Preserve signature across resizes
+let hasSignature = false;        // Track if user has drawn anything
 
 function resizeCanvas() {
     const rect = canvas.parentElement.getBoundingClientRect();
     const dpr = window.devicePixelRatio || 1;
-    canvas.width = rect.width * dpr;
-    canvas.height = 160 * dpr;
+    const newW = Math.floor(rect.width * dpr);
+    const newH = Math.floor(160 * dpr);
+
+    // Save existing signature before resize clears it
+    if (hasSignature) {
+        try { signatureImageBackup = canvas.toDataURL('image/png'); } catch (e) {}
+    }
+
+    canvas.width = newW;
+    canvas.height = newH;
     canvas.style.height = '160px';
     ctx.scale(dpr, dpr);
     ctx.lineWidth = 2;
     ctx.lineCap = 'round';
     ctx.strokeStyle = '#2E1A5E';
+
+    // Restore signature after resize
+    if (signatureImageBackup && hasSignature) {
+        const img = new Image();
+        img.onload = function() {
+            ctx.save();
+            ctx.setTransform(1, 0, 0, 1, 0, 0); // Reset transform to draw raw pixels
+            ctx.drawImage(img, 0, 0, newW, newH);
+            ctx.restore();
+        };
+        img.src = signatureImageBackup;
+    }
 }
 resizeCanvas();
 window.addEventListener('resize', resizeCanvas);
@@ -504,16 +526,22 @@ function getPos(e) {
     return { x: t.clientX - rect.left, y: t.clientY - rect.top };
 }
 
-canvas.addEventListener('mousedown', e => { drawing = true; ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); });
+canvas.addEventListener('mousedown', e => { drawing = true; hasSignature = true; ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); });
 canvas.addEventListener('mousemove', e => { if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); });
-canvas.addEventListener('mouseup', () => drawing = false);
-canvas.addEventListener('mouseleave', () => drawing = false);
-canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); }, { passive: false });
+canvas.addEventListener('mouseup', () => { drawing = false; if (hasSignature) try { signatureImageBackup = canvas.toDataURL('image/png'); } catch(e){} });
+canvas.addEventListener('mouseleave', () => { drawing = false; });
+canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; hasSignature = true; ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); }, { passive: false });
 canvas.addEventListener('touchmove', e => { e.preventDefault(); if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); }, { passive: false });
-canvas.addEventListener('touchend', () => drawing = false);
+canvas.addEventListener('touchend', e => { drawing = false; if (hasSignature) try { signatureImageBackup = canvas.toDataURL('image/png'); } catch(e2){} });
 
 function clearSignature() {
+    const dpr = window.devicePixelRatio || 1;
+    ctx.save();
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.restore();
+    hasSignature = false;
+    signatureImageBackup = null;
 }
 
 /* ── Dictation (Web Speech API) ── */
@@ -576,26 +604,37 @@ function collectData() {
         datum_start: f('datum_start'), zeit_von: f('zeit_von'), zeit_bis: f('zeit_bis'),
         preismodell: f('preismodell'), preis: f('preis'), mwst: f('mwst'),
         bemerkungen: f('bemerkungen'), ort_datum: f('ort_datum'),
-        signatureData: canvas.toDataURL('image/png')
+        signatureData: hasSignature ? (signatureImageBackup || canvas.toDataURL('image/png')) : null
     };
 }
 
 /* ── PDF Generation (using browser print as fallback, or jsPDF if loaded) ── */
 function generatePDF() {
     // Try using jsPDF if available
-    if (typeof window.jspdf !== 'undefined' || typeof jspdf !== 'undefined') {
+    if (typeof window.jspdf !== 'undefined') {
         buildJsPDF();
         return;
     }
-    // Load jsPDF dynamically
-    const script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js';
-    script.onload = () => buildJsPDF();
-    script.onerror = () => {
-        alert('PDF-Bibliothek konnte nicht geladen werden. Verwenden Sie die Druckfunktion (Ctrl+P → Als PDF speichern).');
-        window.print();
+    // Load jsPDF dynamically with retry fallback
+    const loadScript = (url) => {
+        return new Promise((resolve, reject) => {
+            const s = document.createElement('script');
+            s.src = url;
+            s.onload = resolve;
+            s.onerror = reject;
+            document.head.appendChild(s);
+        });
     };
-    document.head.appendChild(script);
+    const primaryURL = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js';
+    const fallbackURL = 'https://unpkg.com/jspdf@2.5.2/dist/jspdf.umd.min.js';
+
+    loadScript(primaryURL)
+        .catch(() => loadScript(fallbackURL))
+        .then(() => buildJsPDF())
+        .catch(() => {
+            alert('PDF-Bibliothek konnte nicht geladen werden. Verwenden Sie die Druckfunktion.');
+            window.print();
+        });
 }
 
 function buildJsPDF() {
@@ -674,18 +713,50 @@ function buildJsPDF() {
     }
 
     // Signature
-    if (d.signatureData && d.signatureData.length > 100) {
-        if (y > 230) { doc.addPage(); y = 20; }
+    if (d.signatureData) {
+        if (y > 220) { doc.addPage(); y = 20; }
         heading('Unterschrift');
         try {
             doc.addImage(d.signatureData, 'PNG', 14, y, 80, 30);
             y += 35;
-        } catch (e) {}
+        } catch (e) {
+            console.error('Signatur konnte nicht eingefügt werden:', e);
+        }
     }
     line('Ort / Datum', d.ort_datum);
 
     const name = (d.nachname || 'vertrag').replace(/\s+/g, '_');
-    doc.save('TidyTeam_Vertrag_' + name + '.pdf');
+    const fileName = 'TidyTeam_Vertrag_' + name + '.pdf';
+
+    // Universal PDF save – works on desktop, mobile, and all browsers
+    try {
+        const blob = doc.output('blob');
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, 500);
+    } catch (e) {
+        // Fallback: use jsPDF built-in save
+        try {
+            doc.save(fileName);
+        } catch (e2) {
+            // Last resort: open as data URI
+            const pdfDataUri = doc.output('datauristring');
+            const w = window.open('', '_blank');
+            if (w) {
+                w.document.write('<iframe width="100%" height="100%" src="' + pdfDataUri + '"></iframe>');
+            } else {
+                alert('Bitte erlauben Sie Pop-ups für diese Seite, um das PDF anzuzeigen.');
+            }
+        }
+    }
 }
 
 /* ── E-Mail ── */
