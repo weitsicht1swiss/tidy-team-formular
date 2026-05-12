@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tidy Team – Reinigungsvertrag</title>
+    <style>
+        :root {
+            --purple: #2E1A5E;
+            --purple-light: #4A2D8A;
+            --blue: #00C8E0;
+            --blue-light: #6EE7F7;
+            --white: #FFFFFF;
+            --gray-light: #F4F6F9;
+            --gray: #8896A6;
+            --shadow: 0 2px 12px rgba(46,26,94,.12);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body { height: 100%; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--purple);
+            line-height: 1.5;
+            position: relative;
+            min-height: 100vh;
+        }
+
+        /* ── Background image: full-page, semi-transparent ── */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: url('background.png') top center / cover no-repeat;
+            opacity: 0.12;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* ── Layout ── */
+        .page-wrapper {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 24px 20px 60px;
+        }
+
+        /* ── Header ── */
+        .header {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+        .header img {
+            max-width: 260px;
+            height: auto;
+            margin-bottom: 8px;
+        }
+        .header h1 {
+            font-size: 1.6rem;
+            color: var(--purple);
+            font-weight: 700;
+            letter-spacing: .5px;
+        }
+        .header p {
+            color: var(--gray);
+            font-size: .92rem;
+        }
+
+        /* ── Sections / Cards ── */
+        .section {
+            background: rgba(255,255,255,.92);
+            border: 1px solid #E2E6EC;
+            border-radius: 12px;
+            padding: 24px 28px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow);
+        }
+        .section h2 {
+            font-size: 1.1rem;
+            color: var(--purple);
+            margin-bottom: 16px;
+            border-bottom: 2px solid var(--blue);
+            padding-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section h2 .icon { font-size: 1.25rem; }
+
+        /* ── Form Elements ── */
+        label {
+            display: block;
+            font-weight: 600;
+            font-size: .88rem;
+            margin-bottom: 4px;
+            color: var(--purple);
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        input[type="number"],
+        input[type="time"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #CDD3DC;
+            border-radius: 8px;
+            font-size: .95rem;
+            color: #333;
+            background: var(--white);
+            transition: border-color .2s;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(0,200,224,.18);
+        }
+        textarea { resize: vertical; min-height: 90px; }
+
+        .row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 14px; }
+        .col { flex: 1 1 220px; }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 400;
+            cursor: pointer;
+            padding: 4px 0;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: 18px; height: 18px; accent-color: var(--blue);
+        }
+
+        /* ── Buttons ── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 11px 22px;
+            border: none;
+            border-radius: 8px;
+            font-size: .95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .2s, transform .1s;
+        }
+        .btn:active { transform: scale(.97); }
+        .btn-primary {
+            background: var(--purple);
+            color: var(--white);
+        }
+        .btn-primary:hover { background: var(--purple-light); }
+        .btn-blue {
+            background: var(--blue);
+            color: var(--white);
+        }
+        .btn-blue:hover { background: #00b0c8; }
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--purple);
+            color: var(--purple);
+        }
+        .btn-outline:hover { background: var(--purple); color: var(--white); }
+        .btn-whatsapp { background: #25D366; color: #fff; }
+        .btn-whatsapp:hover { background: #1ebe57; }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 12px;
+            justify-content: center;
+        }
+
+        /* ── Signature Canvas ── */
+        .sig-wrapper {
+            border: 2px dashed #CDD3DC;
+            border-radius: 10px;
+            position: relative;
+            background: #FAFBFD;
+            overflow: hidden;
+        }
+        #signatureCanvas {
+            width: 100%;
+            height: 160px;
+            display: block;
+            cursor: crosshair;
+            touch-action: none;
+        }
+        .sig-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        /* ── Dictation button ── */
+        .dictation-btn {
+            background: var(--blue);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 38px; height: 38px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            vertical-align: middle;
+            margin-left: 8px;
+            transition: background .2s;
+        }
+        .dictation-btn.recording { background: #E53935; animation: pulse 1s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.6} }
+
+        /* ── Responsive ── */
+        @media(max-width:600px){
+            .page-wrapper { padding: 12px 8px 40px; }
+            .section { padding: 16px 14px; }
+            .row { flex-direction: column; gap: 10px; }
+            .header img { max-width: 180px; }
+        }
+
+        /* ── Print ── */
+        @media print {
+            body::before { opacity: 0.06; }
+            .btn, .sig-actions, .actions, .dictation-btn { display: none !important; }
+            .section { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-wrapper">
+
+    <!-- Header -->
+    <div class="header">
+        <img src="Tidy_Team_Logo_RGB_2C_Zusatz.jpg" alt="Tidy Team – Die Reinigungsprofis">
+        <h1>Reinigungsvertrag / Auftragsformular</h1>
+        <p>Bitte füllen Sie alle relevanten Felder aus</p>
+    </div>
+
+    <form id="tidyForm">
+
+        <!-- 1 ─ Kundendaten -->
+        <div class="section">
+            <h2><span class="icon">👤</span> Kundendaten</h2>
+            <div class="row">
+                <div class="col">
+                    <label for="anrede">Anrede</label>
+                    <select id="anrede">
+                        <option value="">— bitte wählen —</option>
+                        <option>Herr</option>
+                        <option>Frau</option>
+                        <option>Firma</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label for="vorname">Vorname</label>
+                    <input type="text" id="vorname" placeholder="Max">
+                </div>
+                <div class="col">
+                    <label for="nachname">Nachname</label>
+                    <input type="text" id="nachname" placeholder="Muster">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="firma">Firma (optional)</label>
+                    <input type="text" id="firma">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="strasse">Strasse &amp; Nr.</label>
+                    <input type="text" id="strasse" placeholder="Musterstrasse 12">
+                </div>
+                <div class="col">
+                    <label for="plz">PLZ</label>
+                    <input type="text" id="plz" placeholder="8000">
+                </div>
+                <div class="col">
+                    <label for="ort">Ort</label>
+                    <input type="text" id="ort" placeholder="Zürich">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="telefon">Telefon</label>
+                    <input type="tel" id="telefon" placeholder="+41 79 123 45 67">
+                </div>
+                <div class="col">
+                    <label for="email">E-Mail</label>
+                    <input type="email" id="email" placeholder="max@muster.ch">
+                </div>
+            </div>
+        </div>
+
+        <!-- 2 ─ Objektdaten -->
+        <div class="section">
+            <h2><span class="icon">🏠</span> Objektdaten</h2>
+            <div class="row">
+                <div class="col">
+                    <label for="obj_strasse">Objektadresse (falls abweichend)</label>
+                    <input type="text" id="obj_strasse">
+                </div>
+                <div class="col">
+                    <label for="obj_plz">PLZ / Ort</label>
+                    <input type="text" id="obj_plz">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="obj_typ">Objekttyp</label>
+                    <select id="obj_typ">
+                        <option value="">— bitte wählen —</option>
+                        <option>Wohnung</option>
+                        <option>Haus</option>
+                        <option>Büro / Gewerbe</option>
+                        <option>Praxis</option>
+                        <option>Treppenhaus</option>
+                        <option>Anderes</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label for="zimmer">Anzahl Zimmer</label>
+                    <input type="number" id="zimmer" min="1" max="30">
+                </div>
+                <div class="col">
+                    <label for="flaeche">Fläche (m²)</label>
+                    <input type="number" id="flaeche" min="1">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="stockwerk">Stockwerk</label>
+                    <input type="text" id="stockwerk">
+                </div>
+                <div class="col">
+                    <label for="zugang">Schlüssel / Zugang</label>
+                    <select id="zugang">
+                        <option value="">— bitte wählen —</option>
+                        <option>Kunde anwesend</option>
+                        <option>Schlüssel hinterlegt</option>
+                        <option>Schlüsselübergabe</option>
+                        <option>Code / Badge</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3 ─ Reinigungsleistungen -->
+        <div class="section">
+            <h2><span class="icon">🧹</span> Reinigungsleistungen</h2>
+            <div class="row">
+                <div class="col">
+                    <label for="auftragstyp">Auftragstyp</label>
+                    <select id="auftragstyp">
+                        <option value="">— bitte wählen —</option>
+                        <option>Unterhaltsreinigung</option>
+                        <option>Grundreinigung</option>
+                        <option>Endreinigung / Umzug</option>
+                        <option>Baureinigung</option>
+                        <option>Fensterreinigung</option>
+                        <option>Büroreinigung</option>
+                        <option>Sonderreinigung</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label for="turnus">Turnus</label>
+                    <select id="turnus">
+                        <option value="">— bitte wählen —</option>
+                        <option>Einmalig</option>
+                        <option>Wöchentlich</option>
+                        <option>14-täglich</option>
+                        <option>Monatlich</option>
+                        <option>Nach Vereinbarung</option>
+                    </select>
+                </div>
+            </div>
+            <div class="checkbox-group" style="margin-top:8px">
+                <p style="font-weight:600;margin-bottom:6px;">Zusätzliche Leistungen:</p>
+                <label><input type="checkbox" id="z_fenster"> Fensterreinigung</label>
+                <label><input type="checkbox" id="z_kueche"> Küche gründlich (Backofen, Kühlschrank)</label>
+                <label><input type="checkbox" id="z_bad"> Bad / WC gründlich</label>
+                <label><input type="checkbox" id="z_boden"> Boden (wischen, saugen)</label>
+                <label><input type="checkbox" id="z_staub"> Staubwischen</label>
+                <label><input type="checkbox" id="z_buegeln"> Bügeln / Wäsche</label>
+                <label><input type="checkbox" id="z_balkon"> Balkon / Terrasse</label>
+                <label><input type="checkbox" id="z_keller"> Keller / Garage</label>
+            </div>
+        </div>
+
+        <!-- 4 ─ Termin & Preise -->
+        <div class="section">
+            <h2><span class="icon">📅</span> Termin &amp; Preise</h2>
+            <div class="row">
+                <div class="col">
+                    <label for="datum_start">Startdatum</label>
+                    <input type="date" id="datum_start">
+                </div>
+                <div class="col">
+                    <label for="zeit_von">Uhrzeit von</label>
+                    <input type="time" id="zeit_von">
+                </div>
+                <div class="col">
+                    <label for="zeit_bis">Uhrzeit bis</label>
+                    <input type="time" id="zeit_bis">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label for="preismodell">Preismodell</label>
+                    <select id="preismodell">
+                        <option value="">— bitte wählen —</option>
+                        <option>Stundenansatz</option>
+                        <option>Pauschal</option>
+                        <option>Nach Aufwand</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label for="preis">Preis (CHF)</label>
+                    <input type="number" id="preis" step="0.05" min="0" placeholder="0.00">
+                </div>
+                <div class="col">
+                    <label for="mwst">inkl. MwSt.</label>
+                    <select id="mwst">
+                        <option>Ja (8.1 %)</option>
+                        <option>Nein</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5 ─ Bemerkungen + Diktierfunktion -->
+        <div class="section">
+            <h2><span class="icon">📝</span> Bemerkungen
+                <button type="button" class="dictation-btn" id="dictBtn" title="Spracheingabe starten" onclick="toggleDictation()">🎤</button>
+            </h2>
+            <textarea id="bemerkungen" rows="5" placeholder="Zusätzliche Anmerkungen, Wünsche oder Sonderwünsche …"></textarea>
+        </div>
+
+        <!-- 6 ─ Unterschrift -->
+        <div class="section">
+            <h2><span class="icon">✍️</span> Unterschrift Kunde</h2>
+            <div class="sig-wrapper">
+                <canvas id="signatureCanvas"></canvas>
+            </div>
+            <div class="sig-actions">
+                <button type="button" class="btn btn-outline" onclick="clearSignature()" style="font-size:.85rem;padding:7px 16px;">Löschen</button>
+            </div>
+            <div class="row" style="margin-top:12px;">
+                <div class="col">
+                    <label for="ort_datum">Ort / Datum</label>
+                    <input type="text" id="ort_datum" placeholder="Zürich, 12.05.2026">
+                </div>
+            </div>
+        </div>
+
+        <!-- 7 ─ Aktionen -->
+        <div class="section" style="text-align:center;">
+            <h2 style="justify-content:center;"><span class="icon">📤</span> Vertrag senden / speichern</h2>
+            <div class="actions">
+                <button type="button" class="btn btn-primary" onclick="generatePDF()">📄 PDF erstellen</button>
+                <button type="button" class="btn btn-blue" onclick="sendEmail()">✉️ Per E-Mail senden</button>
+                <button type="button" class="btn btn-whatsapp" onclick="sendWhatsApp()">💬 WhatsApp senden</button>
+                <button type="button" class="btn btn-outline" onclick="window.print()">🖨️ Drucken</button>
+            </div>
+        </div>
+
+    </form>
+
+</div>
+
+<!-- ════════════════════════════════════════
+     JavaScript
+     ════════════════════════════════════════ -->
+<script>
+/* ── Signature Pad ── */
+const canvas = document.getElementById('signatureCanvas');
+const ctx = canvas.getContext('2d');
+let drawing = false;
+
+function resizeCanvas() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = rect.width * dpr;
+    canvas.height = 160 * dpr;
+    canvas.style.height = '160px';
+    ctx.scale(dpr, dpr);
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = '#2E1A5E';
+}
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+
+function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const t = e.touches ? e.touches[0] : e;
+    return { x: t.clientX - rect.left, y: t.clientY - rect.top };
+}
+
+canvas.addEventListener('mousedown', e => { drawing = true; ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); });
+canvas.addEventListener('mousemove', e => { if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); });
+canvas.addEventListener('mouseup', () => drawing = false);
+canvas.addEventListener('mouseleave', () => drawing = false);
+canvas.addEventListener('touchstart', e => { e.preventDefault(); drawing = true; ctx.beginPath(); const p = getPos(e); ctx.moveTo(p.x, p.y); }, { passive: false });
+canvas.addEventListener('touchmove', e => { e.preventDefault(); if (!drawing) return; const p = getPos(e); ctx.lineTo(p.x, p.y); ctx.stroke(); }, { passive: false });
+canvas.addEventListener('touchend', () => drawing = false);
+
+function clearSignature() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+}
+
+/* ── Dictation (Web Speech API) ── */
+let recognition, isRecording = false;
+function toggleDictation() {
+    const btn = document.getElementById('dictBtn');
+    const ta = document.getElementById('bemerkungen');
+    if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+        alert('Spracheingabe wird in diesem Browser nicht unterstützt. Bitte verwenden Sie Chrome.');
+        return;
+    }
+    if (isRecording) {
+        recognition.stop();
+        return;
+    }
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    recognition = new SR();
+    recognition.lang = 'de-CH';
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    let finalText = ta.value;
+    recognition.onresult = e => {
+        let interim = '';
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+            if (e.results[i].isFinal) {
+                finalText += e.results[i][0].transcript + ' ';
+            } else {
+                interim += e.results[i][0].transcript;
+            }
+        }
+        ta.value = finalText + interim;
+    };
+    recognition.onstart = () => { isRecording = true; btn.classList.add('recording'); };
+    recognition.onend = () => { isRecording = false; btn.classList.remove('recording'); ta.value = finalText; };
+    recognition.onerror = e => { console.error(e); isRecording = false; btn.classList.remove('recording'); };
+    recognition.start();
+}
+
+/* ── Collect form data ── */
+function collectData() {
+    const f = id => (document.getElementById(id)?.value || '').trim();
+    const c = id => document.getElementById(id)?.checked;
+    const extras = [];
+    if (c('z_fenster')) extras.push('Fensterreinigung');
+    if (c('z_kueche')) extras.push('Küche gründlich');
+    if (c('z_bad')) extras.push('Bad / WC gründlich');
+    if (c('z_boden')) extras.push('Boden');
+    if (c('z_staub')) extras.push('Staubwischen');
+    if (c('z_buegeln')) extras.push('Bügeln / Wäsche');
+    if (c('z_balkon')) extras.push('Balkon / Terrasse');
+    if (c('z_keller')) extras.push('Keller / Garage');
+    return {
+        anrede: f('anrede'), vorname: f('vorname'), nachname: f('nachname'),
+        firma: f('firma'), strasse: f('strasse'), plz: f('plz'), ort: f('ort'),
+        telefon: f('telefon'), email: f('email'),
+        obj_strasse: f('obj_strasse'), obj_plz: f('obj_plz'),
+        obj_typ: f('obj_typ'), zimmer: f('zimmer'), flaeche: f('flaeche'),
+        stockwerk: f('stockwerk'), zugang: f('zugang'),
+        auftragstyp: f('auftragstyp'), turnus: f('turnus'), extras,
+        datum_start: f('datum_start'), zeit_von: f('zeit_von'), zeit_bis: f('zeit_bis'),
+        preismodell: f('preismodell'), preis: f('preis'), mwst: f('mwst'),
+        bemerkungen: f('bemerkungen'), ort_datum: f('ort_datum'),
+        signatureData: canvas.toDataURL('image/png')
+    };
+}
+
+/* ── PDF Generation (using browser print as fallback, or jsPDF if loaded) ── */
+function generatePDF() {
+    // Try using jsPDF if available
+    if (typeof window.jspdf !== 'undefined' || typeof jspdf !== 'undefined') {
+        buildJsPDF();
+        return;
+    }
+    // Load jsPDF dynamically
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js';
+    script.onload = () => buildJsPDF();
+    script.onerror = () => {
+        alert('PDF-Bibliothek konnte nicht geladen werden. Verwenden Sie die Druckfunktion (Ctrl+P → Als PDF speichern).');
+        window.print();
+    };
+    document.head.appendChild(script);
+}
+
+function buildJsPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF('p', 'mm', 'a4');
+    const d = collectData();
+    let y = 20;
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(18);
+    doc.setTextColor(46, 26, 94);
+    doc.text('Tidy Team – Reinigungsvertrag', 105, y, { align: 'center' });
+    y += 12;
+
+    function heading(text) {
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(12);
+        doc.setTextColor(0, 200, 224);
+        doc.text(text, 14, y);
+        y += 2;
+        doc.setDrawColor(0, 200, 224);
+        doc.line(14, y, 196, y);
+        y += 7;
+    }
+
+    function line(label, value) {
+        if (!value) return;
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(10);
+        doc.setTextColor(46, 26, 94);
+        doc.text(label + ':', 14, y);
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(60, 60, 60);
+        doc.text(String(value), 65, y);
+        y += 6;
+        if (y > 270) { doc.addPage(); y = 20; }
+    }
+
+    heading('Kundendaten');
+    line('Anrede', d.anrede);
+    line('Name', (d.vorname + ' ' + d.nachname).trim());
+    line('Firma', d.firma);
+    line('Adresse', d.strasse + ', ' + d.plz + ' ' + d.ort);
+    line('Telefon', d.telefon);
+    line('E-Mail', d.email);
+
+    heading('Objektdaten');
+    line('Objektadresse', d.obj_strasse || '(wie Kundenadresse)');
+    line('PLZ / Ort', d.obj_plz);
+    line('Objekttyp', d.obj_typ);
+    line('Zimmer', d.zimmer);
+    line('Fläche', d.flaeche ? d.flaeche + ' m²' : '');
+    line('Stockwerk', d.stockwerk);
+    line('Zugang', d.zugang);
+
+    heading('Leistungen');
+    line('Auftragstyp', d.auftragstyp);
+    line('Turnus', d.turnus);
+    line('Zusätzlich', d.extras.join(', ') || '—');
+
+    heading('Termin & Preise');
+    line('Startdatum', d.datum_start);
+    line('Uhrzeit', (d.zeit_von && d.zeit_bis) ? d.zeit_von + ' – ' + d.zeit_bis : '');
+    line('Preismodell', d.preismodell);
+    line('Preis', d.preis ? 'CHF ' + d.preis : '');
+    line('MwSt.', d.mwst);
+
+    if (d.bemerkungen) {
+        heading('Bemerkungen');
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(10);
+        doc.setTextColor(60, 60, 60);
+        const lines = doc.splitTextToSize(d.bemerkungen, 170);
+        doc.text(lines, 14, y);
+        y += lines.length * 5 + 5;
+    }
+
+    // Signature
+    if (d.signatureData && d.signatureData.length > 100) {
+        if (y > 230) { doc.addPage(); y = 20; }
+        heading('Unterschrift');
+        try {
+            doc.addImage(d.signatureData, 'PNG', 14, y, 80, 30);
+            y += 35;
+        } catch (e) {}
+    }
+    line('Ort / Datum', d.ort_datum);
+
+    const name = (d.nachname || 'vertrag').replace(/\s+/g, '_');
+    doc.save('TidyTeam_Vertrag_' + name + '.pdf');
+}
+
+/* ── E-Mail ── */
+function sendEmail() {
+    const d = collectData();
+    const subject = encodeURIComponent('Reinigungsvertrag – ' + d.vorname + ' ' + d.nachname);
+    const body = encodeURIComponent(
+        'Reinigungsvertrag\n\n' +
+        'Kunde: ' + d.anrede + ' ' + d.vorname + ' ' + d.nachname + '\n' +
+        'Firma: ' + d.firma + '\n' +
+        'Adresse: ' + d.strasse + ', ' + d.plz + ' ' + d.ort + '\n' +
+        'Telefon: ' + d.telefon + '\n' +
+        'E-Mail: ' + d.email + '\n\n' +
+        'Objekt: ' + d.obj_typ + ', ' + d.zimmer + ' Zimmer, ' + d.flaeche + ' m²\n' +
+        'Auftrag: ' + d.auftragstyp + ' (' + d.turnus + ')\n' +
+        'Extras: ' + (d.extras.join(', ') || '—') + '\n' +
+        'Start: ' + d.datum_start + ' ' + d.zeit_von + '–' + d.zeit_bis + '\n' +
+        'Preis: CHF ' + d.preis + ' (' + d.preismodell + ', ' + d.mwst + ')\n\n' +
+        'Bemerkungen: ' + d.bemerkungen + '\n\n' +
+        'Ort/Datum: ' + d.ort_datum
+    );
+    const recipient = d.email ? d.email : '';
+    window.location.href = 'mailto:' + recipient + '?subject=' + subject + '&body=' + body;
+}
+
+/* ── WhatsApp ── */
+function sendWhatsApp() {
+    const d = collectData();
+    const text = encodeURIComponent(
+        '🧹 *Tidy Team – Reinigungsvertrag*\n\n' +
+        '👤 *Kunde:* ' + d.anrede + ' ' + d.vorname + ' ' + d.nachname + '\n' +
+        '📍 ' + d.strasse + ', ' + d.plz + ' ' + d.ort + '\n' +
+        '📞 ' + d.telefon + '\n' +
+        '✉️ ' + d.email + '\n\n' +
+        '🏠 *Objekt:* ' + d.obj_typ + ', ' + d.zimmer + ' Zi., ' + d.flaeche + ' m²\n' +
+        '🧹 *Auftrag:* ' + d.auftragstyp + ' (' + d.turnus + ')\n' +
+        '➕ *Extras:* ' + (d.extras.join(', ') || '—') + '\n\n' +
+        '📅 *Start:* ' + d.datum_start + ' ' + d.zeit_von + '–' + d.zeit_bis + '\n' +
+        '💰 *Preis:* CHF ' + d.preis + ' (' + d.preismodell + ')\n\n' +
+        '📝 *Bemerkungen:* ' + d.bemerkungen
+    );
+    const phone = d.telefon.replace(/[^0-9+]/g, '');
+    window.open('https://wa.me/' + phone + '?text=' + text, '_blank');
+}
+</script>
+
+</body>
+</html>
