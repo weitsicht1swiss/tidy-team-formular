@@ -330,14 +330,60 @@
         }
         .company-footer a:hover { text-decoration: underline; }
 
-        /* ── Responsive ── */
+        /* ── Responsive – Tablets ── */
+        @media(max-width:860px){
+            .page-wrapper { padding: 16px 12px 48px; }
+            .section { padding: 20px 18px; }
+        }
+
+        /* ── Responsive – Phones ── */
         @media(max-width:600px){
-            .page-wrapper { padding: 12px 8px 40px; }
-            .section { padding: 16px 14px; }
-            .row { flex-direction: column; gap: 10px; }
-            .header img { max-width: 180px; }
-            .leistungen-grid, .extras-grid { grid-template-columns: 1fr; }
-            .leistung-item, .extra-item { flex-wrap: wrap; }
+            .page-wrapper { padding: 10px 6px 36px; }
+            .section { padding: 14px 12px; margin-bottom: 14px; border-radius: 10px; }
+            .row { flex-direction: column; gap: 8px; margin-bottom: 10px; }
+            .col { flex: 1 1 100%; }
+            .header img { max-width: 160px; }
+            .header h1 { font-size: 1.3rem; }
+            .header p { font-size: .85rem; }
+            .section h2 { font-size: 1rem; margin-bottom: 12px; }
+            .leistungen-grid, .extras-grid { grid-template-columns: 1fr; gap: 6px; }
+            .leistung-item, .extra-item { flex-wrap: wrap; padding: 10px; min-height: 48px; }
+            .leistung-item .leistung-label, .extra-item .extra-label { font-size: .88rem; flex-basis: 100%; margin-bottom: 4px; }
+            .leistung-item .leistung-controls, .extra-item .extra-controls { gap: 12px; }
+            .leistung-item .leistung-controls label, .extra-item .extra-controls label { font-size: .9rem; gap: 6px; }
+            .leistung-item .leistung-controls input[type="radio"],
+            .extra-item .extra-controls input[type="radio"] { width: 20px; height: 20px; }
+            .leistung-item .leistung-controls input[type="number"] { width: 60px; padding: 6px 8px; font-size: .9rem; }
+            input[type="text"], input[type="email"], input[type="tel"],
+            input[type="date"], input[type="number"], input[type="time"],
+            select, textarea { padding: 12px 14px; font-size: 1rem; }
+            .btn { padding: 13px 20px; font-size: .95rem; width: 100%; justify-content: center; }
+            .actions { flex-direction: column; gap: 8px; }
+            .sig-canvas { height: 140px; }
+            .sig-wrapper { border-width: 2px; }
+            .sig-actions { justify-content: center; }
+            .sig-actions .btn { width: auto; }
+            .company-footer { font-size: .78rem; padding: 16px 10px; }
+            label { font-size: .85rem; margin-bottom: 3px; }
+        }
+
+        /* ── Responsive – Small phones ── */
+        @media(max-width:380px){
+            .page-wrapper { padding: 8px 4px 28px; }
+            .section { padding: 12px 10px; }
+            .header img { max-width: 130px; }
+            .header h1 { font-size: 1.15rem; }
+            input[type="text"], input[type="email"], input[type="tel"],
+            input[type="date"], input[type="number"], input[type="time"],
+            select, textarea { padding: 10px 12px; font-size: .95rem; }
+        }
+
+        /* ── Landscape phone ── */
+        @media(max-width:900px) and (orientation: landscape){
+            .leistungen-grid, .extras-grid { grid-template-columns: 1fr 1fr; }
+            .row { flex-direction: row; flex-wrap: wrap; }
+            .col { flex: 1 1 45%; }
+            .sig-canvas { height: 120px; }
         }
 
         /* ── Print ── */
@@ -426,16 +472,6 @@
             <h2><span class="icon">🏠</span> Objektdaten</h2>
             <div class="row">
                 <div class="col">
-                    <label for="obj_strasse">Objektadresse (falls abweichend)</label>
-                    <input type="text" id="obj_strasse">
-                </div>
-                <div class="col">
-                    <label for="obj_plz">PLZ / Ort</label>
-                    <input type="text" id="obj_plz">
-                </div>
-            </div>
-            <div class="row">
-                <div class="col">
                     <label for="obj_typ">Objekttyp</label>
                     <select id="obj_typ">
                         <option value="">— bitte wählen —</option>
@@ -514,6 +550,7 @@
                     <label for="auftragstyp">Auftragstyp</label>
                     <select id="auftragstyp">
                         <option value="">— bitte wählen —</option>
+                        <option>Umzugsreinigung</option>
                         <option>Unterhaltsreinigung</option>
                         <option>Grundreinigung</option>
                         <option>Endreinigung / Umzug</option>
@@ -553,11 +590,11 @@
             </div>
         </div>
 
-        <!-- 4 ─ Leistungen (Original contract checklist) -->
+        <!-- 4 ─ Zusätzliche Leistungen -->
         <div class="section">
-            <h2><span class="icon">🧹</span> Leistungen</h2>
+            <h2><span class="icon">🧹</span> Zusätzliche Leistungen</h2>
             <div class="leistungen-grid">
-                <!-- Storen / Lamellen -->
+                <!-- Storen / Lamellen - JA/NEIN -->
                 <div class="leistung-item">
                     <span class="leistung-label">Storen / Lamellen</span>
                     <div class="leistung-controls">
@@ -565,31 +602,14 @@
                         <label><input type="radio" name="l_storen" value="Nein"> Nein</label>
                     </div>
                 </div>
-                <!-- Fenster -->
+                <!-- Fenster - Anzahl -->
                 <div class="leistung-item">
                     <span class="leistung-label">Fenster</span>
                     <div class="leistung-controls">
-                        <label><input type="radio" name="l_fenster" value="Ja"> Ja</label>
-                        <label><input type="radio" name="l_fenster" value="Nein"> Nein</label>
-                        <label>Stk. <input type="number" id="fenster_stk" min="0" max="99" style="width:55px;"></label>
+                        <label>Anzahl <input type="number" id="fenster_anz" min="0" max="99" style="width:55px;"></label>
                     </div>
                 </div>
-                <!-- WC / Bad -->
-                <div class="leistung-item">
-                    <span class="leistung-label">WC / Bad (Anzahl)</span>
-                    <div class="leistung-controls">
-                        <label>Stk. <input type="number" id="wc_stk" min="0" max="20" style="width:55px;"></label>
-                    </div>
-                </div>
-                <!-- Waschmaschine / Tumbler -->
-                <div class="leistung-item">
-                    <span class="leistung-label">Waschmaschine / Tumbler</span>
-                    <div class="leistung-controls">
-                        <label><input type="radio" name="l_waschmaschine" value="Ja"> Ja</label>
-                        <label><input type="radio" name="l_waschmaschine" value="Nein"> Nein</label>
-                    </div>
-                </div>
-                <!-- Küche -->
+                <!-- Küche - JA/NEIN -->
                 <div class="leistung-item">
                     <span class="leistung-label">Küche</span>
                     <div class="leistung-controls">
@@ -597,32 +617,22 @@
                         <label><input type="radio" name="l_kueche" value="Nein"> Nein</label>
                     </div>
                 </div>
-                <!-- Balkon -->
+                <!-- Nasszellen - Anzahl -->
                 <div class="leistung-item">
-                    <span class="leistung-label">Balkon</span>
+                    <span class="leistung-label">Nasszellen</span>
                     <div class="leistung-controls">
-                        <label><input type="radio" name="l_balkon" value="Ja"> Ja</label>
-                        <label><input type="radio" name="l_balkon" value="Nein"> Nein</label>
-                        <label>Anz. <input type="number" id="balkon_anz" min="0" max="10" style="width:55px;"></label>
+                        <label>Anzahl <input type="number" id="nasszellen_anz" min="0" max="20" style="width:55px;"></label>
                     </div>
                 </div>
-                <!-- Wintergarten -->
+                <!-- Waschturm - JA/NEIN -->
                 <div class="leistung-item">
-                    <span class="leistung-label">Wintergarten</span>
+                    <span class="leistung-label">Waschturm</span>
                     <div class="leistung-controls">
-                        <label><input type="radio" name="l_wintergarten" value="Ja"> Ja</label>
-                        <label><input type="radio" name="l_wintergarten" value="Nein"> Nein</label>
+                        <label><input type="radio" name="l_waschturm" value="Ja"> Ja</label>
+                        <label><input type="radio" name="l_waschturm" value="Nein"> Nein</label>
                     </div>
                 </div>
-                <!-- Kärcher -->
-                <div class="leistung-item">
-                    <span class="leistung-label">Kärcher</span>
-                    <div class="leistung-controls">
-                        <label><input type="radio" name="l_kaercher" value="Ja"> Ja</label>
-                        <label><input type="radio" name="l_kaercher" value="Nein"> Nein</label>
-                    </div>
-                </div>
-                <!-- Teppich -->
+                <!-- Teppich - JA/NEIN -->
                 <div class="leistung-item">
                     <span class="leistung-label">Teppich</span>
                     <div class="leistung-controls">
@@ -630,7 +640,30 @@
                         <label><input type="radio" name="l_teppich" value="Nein"> Nein</label>
                     </div>
                 </div>
-                <!-- Keller -->
+                <!-- Balkon - Anzahl -->
+                <div class="leistung-item">
+                    <span class="leistung-label">Balkon</span>
+                    <div class="leistung-controls">
+                        <label>Anzahl <input type="number" id="balkon_anz" min="0" max="10" style="width:55px;"></label>
+                    </div>
+                </div>
+                <!-- Kärchern - JA/NEIN -->
+                <div class="leistung-item">
+                    <span class="leistung-label">Kärchern</span>
+                    <div class="leistung-controls">
+                        <label><input type="radio" name="l_kaerchern" value="Ja"> Ja</label>
+                        <label><input type="radio" name="l_kaerchern" value="Nein"> Nein</label>
+                    </div>
+                </div>
+                <!-- Wintergarten - JA/NEIN -->
+                <div class="leistung-item">
+                    <span class="leistung-label">Wintergarten</span>
+                    <div class="leistung-controls">
+                        <label><input type="radio" name="l_wintergarten" value="Ja"> Ja</label>
+                        <label><input type="radio" name="l_wintergarten" value="Nein"> Nein</label>
+                    </div>
+                </div>
+                <!-- Keller - JA/NEIN -->
                 <div class="leistung-item">
                     <span class="leistung-label">Keller</span>
                     <div class="leistung-controls">
@@ -638,7 +671,7 @@
                         <label><input type="radio" name="l_keller" value="Nein"> Nein</label>
                     </div>
                 </div>
-                <!-- Estrich -->
+                <!-- Estrich - JA/NEIN -->
                 <div class="leistung-item">
                     <span class="leistung-label">Estrich</span>
                     <div class="leistung-controls">
@@ -646,7 +679,7 @@
                         <label><input type="radio" name="l_estrich" value="Nein"> Nein</label>
                     </div>
                 </div>
-                <!-- Garage -->
+                <!-- Garage - JA/NEIN -->
                 <div class="leistung-item">
                     <span class="leistung-label">Garage</span>
                     <div class="leistung-controls">
@@ -654,36 +687,12 @@
                         <label><input type="radio" name="l_garage" value="Nein"> Nein</label>
                     </div>
                 </div>
-                <!-- Briefkasten -->
+                <!-- Briefkasten - JA/NEIN -->
                 <div class="leistung-item">
                     <span class="leistung-label">Briefkasten</span>
                     <div class="leistung-controls">
                         <label><input type="radio" name="l_briefkasten" value="Ja"> Ja</label>
                         <label><input type="radio" name="l_briefkasten" value="Nein"> Nein</label>
-                    </div>
-                </div>
-                <!-- Boden -->
-                <div class="leistung-item">
-                    <span class="leistung-label">Boden (wischen, saugen)</span>
-                    <div class="leistung-controls">
-                        <label><input type="radio" name="l_boden" value="Ja"> Ja</label>
-                        <label><input type="radio" name="l_boden" value="Nein"> Nein</label>
-                    </div>
-                </div>
-                <!-- Staubwischen -->
-                <div class="leistung-item">
-                    <span class="leistung-label">Staubwischen</span>
-                    <div class="leistung-controls">
-                        <label><input type="radio" name="l_staub" value="Ja"> Ja</label>
-                        <label><input type="radio" name="l_staub" value="Nein"> Nein</label>
-                    </div>
-                </div>
-                <!-- Bügeln / Wäsche -->
-                <div class="leistung-item">
-                    <span class="leistung-label">Bügeln / Wäsche</span>
-                    <div class="leistung-controls">
-                        <label><input type="radio" name="l_buegeln" value="Ja"> Ja</label>
-                        <label><input type="radio" name="l_buegeln" value="Nein"> Nein</label>
                     </div>
                 </div>
             </div>
@@ -907,9 +916,9 @@ function collectData() {
     const f = id => (document.getElementById(id)?.value || '').trim();
     const r = name => { const el = document.querySelector('input[name="'+name+'"]:checked'); return el ? el.value : ''; };
 
-    // Collect all Leistungen
+    // Collect all Leistungen (JA/NEIN radio buttons)
     const leistungen = {};
-    const leistungNames = ['l_storen','l_fenster','l_waschmaschine','l_kueche','l_balkon','l_wintergarten','l_kaercher','l_teppich','l_keller','l_estrich','l_garage','l_briefkasten','l_boden','l_staub','l_buegeln'];
+    const leistungNames = ['l_storen','l_kueche','l_waschturm','l_teppich','l_kaerchern','l_wintergarten','l_keller','l_estrich','l_garage','l_briefkasten'];
     leistungNames.forEach(name => { leistungen[name] = r(name); });
 
     const padTT = sigPads['TT'];
@@ -920,7 +929,6 @@ function collectData() {
         anrede: f('anrede'), vorname: f('vorname'), nachname: f('nachname'),
         firma: f('firma'), strasse: f('strasse'), plz: f('plz'), ort: f('ort'),
         telefon: f('telefon'), email: f('email'),
-        obj_strasse: f('obj_strasse'), obj_plz: f('obj_plz'),
         obj_typ: f('obj_typ'), zimmer: f('zimmer'), flaeche: f('flaeche'),
         stockwerk: f('stockwerk'), lift: f('lift'), zugang: f('zugang'),
         preis: f('preis'),
@@ -929,7 +937,7 @@ function collectData() {
         zeit_von: f('zeit_von'), zeit_bis: f('zeit_bis'),
         preismodell: f('preismodell'), mwst: f('mwst'),
         leistungen,
-        fenster_stk: f('fenster_stk'), wc_stk: f('wc_stk'), balkon_anz: f('balkon_anz'),
+        fenster_anz: f('fenster_anz'), nasszellen_anz: f('nasszellen_anz'), balkon_anz: f('balkon_anz'),
         bezahlung: r('bezahlung'), uebergabe: r('uebergabe'), vollmacht: r('vollmacht'),
         bemerkungen: f('bemerkungen'), ort_datum: f('ort_datum'),
         signatureTT: padTT.hasSignature ? (padTT.signatureImageBackup || padTT.canvas.toDataURL('image/png')) : null,
@@ -968,139 +976,206 @@ function buildJsPDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF('p', 'mm', 'a4');
     const d = collectData();
-    let y = 20;
+    const pageW = 210, marginL = 14, marginR = 14, contentW = pageW - marginL - marginR;
+    const footerY = 284;
+    const logoB64 = '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';
+    let y = 12;
 
+    /* ── Helper: add footer to current page ── */
+    function addPageFooter() {
+        doc.setDrawColor(0, 200, 224);
+        doc.setLineWidth(0.3);
+        doc.line(marginL, footerY - 2, pageW - marginR, footerY - 2);
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(6.5);
+        doc.setTextColor(120, 120, 120);
+        doc.text('Tidy Team GmbH · Freiestrasse 38, 8580 Amriswil · Tel: 078 737 97 16 · info@tidy-team.ch · tidy-team.ch', 105, footerY, { align: 'center' });
+        doc.text('UBS IBAN: CH84 0020 3203 1111 7301 A – 0203-1111 73.01A', 105, footerY + 3, { align: 'center' });
+    }
+
+    /* ── Helper: check page break ── */
+    function checkPage(need) {
+        if (y + need > footerY - 6) {
+            addPageFooter();
+            doc.addPage();
+            y = 14;
+        }
+    }
+
+    /* ── Logo + Title ── */
+    try {
+        doc.addImage(logoB64, 'JPEG', marginL, y, 28, 22);
+    } catch(e) { console.warn('Logo not embedded', e); }
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(16);
+    doc.setFontSize(14);
     doc.setTextColor(46, 26, 94);
-    doc.text('Reinigungsvertrag mit Abgabegarantie', 105, y, { align: 'center' });
-    y += 4;
-    doc.setFontSize(9);
+    doc.text('Reinigungsvertrag', marginL + 32, y + 8);
+    doc.text('mit Abgabegarantie', marginL + 32, y + 14);
+    doc.setFontSize(8);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(100, 100, 100);
-    doc.text('Tidy Team GmbH', 105, y + 4, { align: 'center' });
-    y += 14;
+    doc.text('Tidy Team GmbH – Die Reinigungsprofis', marginL + 32, y + 19);
+    y += 26;
 
+    /* ── Section heading ── */
     function heading(text) {
+        checkPage(10);
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(11);
+        doc.setFontSize(10);
         doc.setTextColor(0, 200, 224);
-        doc.text(text, 14, y);
-        y += 2;
+        doc.text(text, marginL, y);
+        y += 1.5;
         doc.setDrawColor(0, 200, 224);
-        doc.line(14, y, 196, y);
-        y += 7;
+        doc.setLineWidth(0.4);
+        doc.line(marginL, y, pageW - marginR, y);
+        y += 5;
     }
 
+    /* ── Single line item ── */
     function line(label, value) {
         if (!value) return;
-        if (y > 270) { doc.addPage(); y = 20; }
+        checkPage(5);
         doc.setFont('helvetica', 'bold');
-        doc.setFontSize(9);
+        doc.setFontSize(8.5);
         doc.setTextColor(46, 26, 94);
-        doc.text(label + ':', 14, y);
+        doc.text(label + ':', marginL, y);
         doc.setFont('helvetica', 'normal');
         doc.setTextColor(60, 60, 60);
-        doc.text(String(value), 65, y);
-        y += 5.5;
+        doc.text(String(value), 62, y);
+        y += 4.5;
     }
 
-    heading('Kundendaten');
-    line('Besichtigungstermin', d.besichtigung);
-    line('Anrede', d.anrede);
-    line('Name', (d.vorname + ' ' + d.nachname).trim());
-    line('Firma', d.firma);
-    line('Adresse', d.strasse + ', ' + d.plz + ' ' + d.ort);
-    line('Telefon', d.telefon);
-    line('E-Mail', d.email);
+    /* ── Two-column line pair ── */
+    function line2(l1, v1, l2, v2) {
+        if (!v1 && !v2) return;
+        checkPage(5);
+        const col2X = 110;
+        doc.setFontSize(8.5);
+        if (v1) {
+            doc.setFont('helvetica', 'bold'); doc.setTextColor(46, 26, 94);
+            doc.text(l1 + ':', marginL, y);
+            doc.setFont('helvetica', 'normal'); doc.setTextColor(60, 60, 60);
+            doc.text(String(v1), 62, y);
+        }
+        if (v2) {
+            doc.setFont('helvetica', 'bold'); doc.setTextColor(46, 26, 94);
+            doc.text(l2 + ':', col2X, y);
+            doc.setFont('helvetica', 'normal'); doc.setTextColor(60, 60, 60);
+            doc.text(String(v2), 152, y);
+        }
+        y += 4.5;
+    }
 
+    /* ═══ KUNDENDATEN ═══ */
+    heading('Kundendaten');
+    line2('Besichtigung', d.besichtigung, 'Anrede', d.anrede);
+    line('Name', (d.vorname + ' ' + d.nachname).trim());
+    if (d.firma) line('Firma', d.firma);
+    line('Adresse', [d.strasse, d.plz, d.ort].filter(Boolean).join(', '));
+    line2('Telefon', d.telefon, 'E-Mail', d.email);
+
+    /* ═══ OBJEKTDATEN ═══ */
     heading('Objektdaten');
-    line('Objektadresse', d.obj_strasse || '(wie Kundenadresse)');
-    line('PLZ / Ort', d.obj_plz);
-    line('Objekttyp', d.obj_typ);
-    line('Zimmer', d.zimmer);
-    line('Fläche', d.flaeche ? d.flaeche + ' m²' : '');
-    line('Stockwerk', d.stockwerk);
-    line('Lift', d.lift);
-    line('Zugang', d.zugang);
+    line2('Objekttyp', d.obj_typ, 'Zimmer', d.zimmer);
+    line2('Fläche', d.flaeche ? d.flaeche + ' m²' : '', 'Stockwerk', d.stockwerk);
+    line2('Lift', d.lift, 'Zugang', d.zugang);
     line('Preis', d.preis ? 'CHF ' + d.preis : '');
 
-    heading('Termin');
-    line('Reinigungstermin', d.datum_start);
-    line('Abgabetermin', d.abgabetermin);
-    line('Uhrzeit', (d.zeit_von && d.zeit_bis) ? d.zeit_von + ' – ' + d.zeit_bis : '');
-    line('Auftragstyp', d.auftragstyp);
-    line('Turnus', d.turnus);
-    line('Preismodell', d.preismodell);
+    /* ═══ TERMIN ═══ */
+    heading('Termin & Preise');
+    line2('Reinigungstermin', d.datum_start, 'Abgabetermin', d.abgabetermin);
+    line2('Uhrzeit', (d.zeit_von && d.zeit_bis) ? d.zeit_von + ' – ' + d.zeit_bis : '', 'Auftragstyp', d.auftragstyp);
+    line2('Turnus', d.turnus, 'Preismodell', d.preismodell);
     line('MwSt.', d.mwst);
 
-    heading('Leistungen');
+    /* ═══ ZUSÄTZLICHE LEISTUNGEN (two-column compact) ═══ */
+    heading('Zusätzliche Leistungen');
     const leistungLabels = {
-        'l_storen': 'Storen / Lamellen', 'l_fenster': 'Fenster', 'l_waschmaschine': 'Waschmaschine / Tumbler',
-        'l_kueche': 'Küche', 'l_balkon': 'Balkon', 'l_wintergarten': 'Wintergarten',
-        'l_kaercher': 'Kärcher', 'l_teppich': 'Teppich', 'l_keller': 'Keller',
-        'l_estrich': 'Estrich', 'l_garage': 'Garage', 'l_briefkasten': 'Briefkasten',
-        'l_boden': 'Boden', 'l_staub': 'Staubwischen', 'l_buegeln': 'Bügeln / Wäsche'
+        'l_storen': 'Storen/Lamellen', 'l_kueche': 'Küche', 'l_waschturm': 'Waschturm',
+        'l_teppich': 'Teppich', 'l_kaerchern': 'Kärchern', 'l_wintergarten': 'Wintergarten',
+        'l_keller': 'Keller', 'l_estrich': 'Estrich', 'l_garage': 'Garage',
+        'l_briefkasten': 'Briefkasten'
     };
+    // Build pairs for two-column output
+    const leistungPairs = [];
     for (const [key, label] of Object.entries(leistungLabels)) {
         let val = d.leistungen[key];
-        if (key === 'l_fenster' && d.fenster_stk) val = (val || 'Ja') + ' (' + d.fenster_stk + ' Stk.)';
-        if (key === 'l_balkon' && d.balkon_anz) val = (val || 'Ja') + ' (' + d.balkon_anz + ' Anz.)';
-        if (val) line(label, val);
+        leistungPairs.push({ label, val: val || '–' });
     }
-    if (d.wc_stk) line('WC / Bad', d.wc_stk + ' Stk.');
+    // Add Anzahl fields
+    leistungPairs.push({ label: 'Fenster', val: d.fenster_anz ? d.fenster_anz + ' Stk.' : '–' });
+    leistungPairs.push({ label: 'Nasszellen', val: d.nasszellen_anz ? d.nasszellen_anz + ' Stk.' : '–' });
+    leistungPairs.push({ label: 'Balkon', val: d.balkon_anz ? d.balkon_anz + ' Stk.' : '–' });
 
+    for (let i = 0; i < leistungPairs.length; i += 2) {
+        const a = leistungPairs[i];
+        const b = leistungPairs[i + 1];
+        line2(a.label, a.val, b ? b.label : '', b ? b.val : '');
+    }
+
+    /* ═══ EXTRAS ═══ */
     heading('Extras');
-    line('Bezahlung', d.bezahlung);
-    line('Übergabe dabei', d.uebergabe);
+    line2('Bezahlung', d.bezahlung, 'Übergabe dabei', d.uebergabe);
     line('Vollmacht', d.vollmacht);
 
+    /* ═══ BEMERKUNGEN ═══ */
     if (d.bemerkungen) {
         heading('Bemerkungen');
         doc.setFont('helvetica', 'normal');
-        doc.setFontSize(9);
+        doc.setFontSize(8.5);
         doc.setTextColor(60, 60, 60);
-        const lines = doc.splitTextToSize(d.bemerkungen, 170);
-        doc.text(lines, 14, y);
-        y += lines.length * 4.5 + 5;
+        const splitLines = doc.splitTextToSize(d.bemerkungen, contentW);
+        for (let i = 0; i < splitLines.length; i++) {
+            checkPage(4.5);
+            doc.text(splitLines[i], marginL, y);
+            y += 4;
+        }
+        y += 2;
     }
 
-    // Signatures
-    if (d.signatureTT || d.signatureKunde) {
-        if (y > 210) { doc.addPage(); y = 20; }
+    /* ═══ UNTERSCHRIFTEN ═══ */
+    if (d.signatureTT || d.signatureKunde || d.ort_datum) {
+        checkPage(42);
         heading('Unterschriften');
         const sigY = y;
         if (d.signatureTT) {
-            try {
-                doc.addImage(d.signatureTT, 'PNG', 14, sigY, 75, 28);
-            } catch (e) { console.error(e); }
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(8);
-            doc.setTextColor(100, 100, 100);
-            doc.text('Tidy Team', 14, sigY + 32);
+            try { doc.addImage(d.signatureTT, 'PNG', marginL, sigY, 70, 24); } catch(e) { console.error(e); }
+            doc.setDrawColor(46, 26, 94); doc.setLineWidth(0.2);
+            doc.line(marginL, sigY + 26, marginL + 70, sigY + 26);
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(100, 100, 100);
+            doc.text('Tidy Team', marginL, sigY + 30);
         }
         if (d.signatureKunde) {
-            try {
-                doc.addImage(d.signatureKunde, 'PNG', 110, sigY, 75, 28);
-            } catch (e) { console.error(e); }
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(8);
-            doc.setTextColor(100, 100, 100);
-            doc.text('Kunde', 110, sigY + 32);
+            try { doc.addImage(d.signatureKunde, 'PNG', 115, sigY, 70, 24); } catch(e) { console.error(e); }
+            doc.setDrawColor(46, 26, 94); doc.setLineWidth(0.2);
+            doc.line(115, sigY + 26, 185, sigY + 26);
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(7.5); doc.setTextColor(100, 100, 100);
+            doc.text('Kunde', 115, sigY + 30);
         }
-        y = sigY + 38;
+        y = sigY + 34;
+        if (d.ort_datum) line('Ort / Datum', d.ort_datum);
     }
-    line('Ort / Datum', d.ort_datum);
 
-    // Footer
-    y = 282;
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7);
-    doc.setTextColor(120, 120, 120);
-    doc.text('Tidy Team GmbH · Freiestrasse 38, 8580 Amriswil · Tel: 078 737 97 16 · info@tidy-team.ch · tidy-team.ch · UBS IBAN: CH84 0020 3203 1111 7301 A', 105, y, { align: 'center' });
+    /* ── Add footer to all pages ── */
+    const totalPages = doc.internal.getNumberOfPages();
+    for (let p = 1; p <= totalPages; p++) {
+        doc.setPage(p);
+        addPageFooter();
+        // Page number
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7);
+        doc.setTextColor(160, 160, 160);
+        doc.text('Seite ' + p + ' / ' + totalPages, pageW - marginR, footerY + 6, { align: 'right' });
+    }
 
     const name = (d.nachname || 'vertrag').replace(/\s+/g, '_');
     const fileName = 'TidyTeam_Vertrag_' + name + '.pdf';
+
+    // If called for blob return (used by email/whatsapp), return blob
+    if (buildJsPDF._returnBlob) {
+        buildJsPDF._returnBlob = false;
+        return { blob: doc.output('blob'), fileName };
+    }
 
     try {
         const blob = doc.output('blob');
@@ -1129,58 +1204,126 @@ function buildJsPDF() {
         }
     }
 }
+buildJsPDF._returnBlob = false;
+
+function buildJsPDFBlob() {
+    buildJsPDF._returnBlob = true;
+    return buildJsPDF();
+}
+
+/* ── Helper: Build summary text ── */
+function buildSummaryText(d, format) {
+    const bold = format === 'whatsapp' ? '*' : '';
+    const nl = '\n';
+    let leistungenText = '';
+    const leistungMap = {
+        'l_storen': 'Storen/Lamellen', 'l_kueche': 'Küche', 'l_waschturm': 'Waschturm',
+        'l_teppich': 'Teppich', 'l_kaerchern': 'Kärchern', 'l_wintergarten': 'Wintergarten',
+        'l_keller': 'Keller', 'l_estrich': 'Estrich', 'l_garage': 'Garage', 'l_briefkasten': 'Briefkasten'
+    };
+    for (const [key, label] of Object.entries(leistungMap)) {
+        if (d.leistungen[key]) leistungenText += label + ': ' + d.leistungen[key] + ', ';
+    }
+    if (d.fenster_anz) leistungenText += 'Fenster: ' + d.fenster_anz + ', ';
+    if (d.nasszellen_anz) leistungenText += 'Nasszellen: ' + d.nasszellen_anz + ', ';
+    if (d.balkon_anz) leistungenText += 'Balkon: ' + d.balkon_anz + ', ';
+    leistungenText = leistungenText.replace(/, $/, '');
+
+    const lines = [];
+    if (format === 'whatsapp') lines.push('🧹 *Reinigungsvertrag mit Abgabegarantie*');
+    else lines.push('Reinigungsvertrag mit Abgabegarantie');
+    lines.push('');
+    if (d.besichtigung) lines.push((format === 'whatsapp' ? '📋 ' : '') + bold + 'Besichtigung:' + bold + ' ' + d.besichtigung);
+    lines.push((format === 'whatsapp' ? '👤 ' : '') + bold + 'Kunde:' + bold + ' ' + [d.anrede, d.vorname, d.nachname].filter(Boolean).join(' '));
+    if (d.strasse || d.plz || d.ort) lines.push((format === 'whatsapp' ? '📍 ' : '') + [d.strasse, d.plz, d.ort].filter(Boolean).join(', '));
+    if (d.telefon) lines.push((format === 'whatsapp' ? '📞 ' : 'Telefon: ') + d.telefon);
+    if (d.email) lines.push((format === 'whatsapp' ? '✉️ ' : 'E-Mail: ') + d.email);
+    lines.push('');
+    const objParts = [d.obj_typ, d.zimmer ? d.zimmer + ' Zi.' : '', d.flaeche ? d.flaeche + ' m²' : '', d.lift ? 'Lift: ' + d.lift : ''].filter(Boolean).join(', ');
+    if (objParts) lines.push((format === 'whatsapp' ? '🏠 ' : '') + bold + 'Objekt:' + bold + ' ' + objParts);
+    if (d.auftragstyp) lines.push((format === 'whatsapp' ? '🧹 ' : '') + bold + 'Auftrag:' + bold + ' ' + d.auftragstyp + (d.turnus ? ' (' + d.turnus + ')' : ''));
+    if (d.datum_start) lines.push((format === 'whatsapp' ? '📅 ' : '') + bold + 'Reinigungstermin:' + bold + ' ' + d.datum_start);
+    if (d.abgabetermin) lines.push((format === 'whatsapp' ? '📅 ' : '') + bold + 'Abgabetermin:' + bold + ' ' + d.abgabetermin);
+    if (d.zeit_von || d.zeit_bis) lines.push((format === 'whatsapp' ? '⏰ ' : '') + bold + 'Uhrzeit:' + bold + ' ' + [d.zeit_von, d.zeit_bis].filter(Boolean).join('–'));
+    if (d.preis) lines.push((format === 'whatsapp' ? '💰 ' : '') + bold + 'Preis:' + bold + ' CHF ' + d.preis + (d.preismodell ? ' (' + d.preismodell + ')' : ''));
+    lines.push('');
+    if (leistungenText) lines.push(bold + 'Leistungen:' + bold + ' ' + leistungenText);
+    if (d.bezahlung) lines.push((format === 'whatsapp' ? '💳 ' : '') + bold + 'Bezahlung:' + bold + ' ' + d.bezahlung);
+    if (d.uebergabe) lines.push((format === 'whatsapp' ? '🤝 ' : '') + bold + 'Übergabe dabei:' + bold + ' ' + d.uebergabe);
+    if (d.vollmacht) lines.push((format === 'whatsapp' ? '📜 ' : '') + bold + 'Vollmacht:' + bold + ' ' + d.vollmacht);
+    if (d.bemerkungen) { lines.push(''); lines.push((format === 'whatsapp' ? '📝 ' : '') + bold + 'Bemerkungen:' + bold + ' ' + d.bemerkungen); }
+    if (d.ort_datum) lines.push(bold + 'Ort/Datum:' + bold + ' ' + d.ort_datum);
+    lines.push('');
+    lines.push('📎 PDF-Vertrag wird separat angehängt.');
+    return lines.join(nl);
+}
+
+/* ── Helper: Generate PDF and return blob URL ── */
+function generatePDFBlob() {
+    return new Promise((resolve, reject) => {
+        if (typeof window.jspdf !== 'undefined') {
+            resolve(buildJsPDFBlob());
+            return;
+        }
+        const loadScript = (url) => new Promise((res, rej) => {
+            const s = document.createElement('script');
+            s.src = url; s.onload = res; s.onerror = rej;
+            document.head.appendChild(s);
+        });
+        loadScript('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.2/jspdf.umd.min.js')
+            .catch(() => loadScript('https://unpkg.com/jspdf@2.5.2/dist/jspdf.umd.min.js'))
+            .then(() => resolve(buildJsPDFBlob()))
+            .catch(reject);
+    });
+}
 
 /* ── E-Mail ── */
 function sendEmail() {
     const d = collectData();
-    const subject = encodeURIComponent('Reinigungsvertrag mit Abgabegarantie – ' + d.vorname + ' ' + d.nachname);
-    const body = encodeURIComponent(
-        'Reinigungsvertrag mit Abgabegarantie\n\n' +
-        'Besichtigungstermin: ' + d.besichtigung + '\n\n' +
-        'Kunde: ' + d.anrede + ' ' + d.vorname + ' ' + d.nachname + '\n' +
-        'Firma: ' + d.firma + '\n' +
-        'Adresse: ' + d.strasse + ', ' + d.plz + ' ' + d.ort + '\n' +
-        'Telefon: ' + d.telefon + '\n' +
-        'E-Mail: ' + d.email + '\n\n' +
-        'Objekt: ' + d.obj_typ + ', ' + d.zimmer + ' Zimmer, ' + d.flaeche + ' m², Lift: ' + d.lift + '\n' +
-        'Auftrag: ' + d.auftragstyp + ' (' + d.turnus + ')\n' +
-        'Reinigungstermin: ' + d.datum_start + '\n' +
-        'Abgabetermin: ' + d.abgabetermin + '\n' +
-        'Uhrzeit: ' + d.zeit_von + '–' + d.zeit_bis + '\n' +
-        'Preis: CHF ' + d.preis + ' (' + d.preismodell + ', ' + d.mwst + ')\n\n' +
-        'Bezahlung: ' + d.bezahlung + '\n' +
-        'Übergabe dabei: ' + d.uebergabe + '\n' +
-        'Vollmacht: ' + d.vollmacht + '\n\n' +
-        'Bemerkungen: ' + d.bemerkungen + '\n\n' +
-        'Ort/Datum: ' + d.ort_datum
-    );
-    const recipient = d.email ? d.email : '';
-    window.location.href = 'mailto:' + recipient + '?subject=' + subject + '&body=' + body;
+    // First generate and download the PDF
+    generatePDFBlob().then(({ blob, fileName }) => {
+        // Download PDF first
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = fileName; a.style.display = 'none';
+        document.body.appendChild(a); a.click();
+        setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
+
+        // Then open email client
+        const subject = encodeURIComponent('Reinigungsvertrag mit Abgabegarantie – ' + [d.vorname, d.nachname].filter(Boolean).join(' '));
+        const body = encodeURIComponent(buildSummaryText(d, 'email'));
+        const recipient = d.email || '';
+        setTimeout(() => {
+            window.location.href = 'mailto:' + recipient + '?subject=' + subject + '&body=' + body;
+        }, 600);
+    }).catch(() => {
+        alert('PDF konnte nicht erstellt werden. Bitte versuchen Sie es erneut.');
+    });
 }
 
 /* ── WhatsApp ── */
 function sendWhatsApp() {
     const d = collectData();
-    const text = encodeURIComponent(
-        '🧹 *Reinigungsvertrag mit Abgabegarantie*\n\n' +
-        '📋 *Besichtigung:* ' + d.besichtigung + '\n' +
-        '👤 *Kunde:* ' + d.anrede + ' ' + d.vorname + ' ' + d.nachname + '\n' +
-        '📍 ' + d.strasse + ', ' + d.plz + ' ' + d.ort + '\n' +
-        '📞 ' + d.telefon + '\n' +
-        '✉️ ' + d.email + '\n\n' +
-        '🏠 *Objekt:* ' + d.obj_typ + ', ' + d.zimmer + ' Zi., ' + d.flaeche + ' m², Lift: ' + d.lift + '\n' +
-        '🧹 *Auftrag:* ' + d.auftragstyp + ' (' + d.turnus + ')\n' +
-        '📅 *Reinigungstermin:* ' + d.datum_start + '\n' +
-        '📅 *Abgabetermin:* ' + d.abgabetermin + '\n' +
-        '⏰ *Uhrzeit:* ' + d.zeit_von + '–' + d.zeit_bis + '\n' +
-        '💰 *Preis:* CHF ' + d.preis + ' (' + d.preismodell + ')\n\n' +
-        '💳 *Bezahlung:* ' + d.bezahlung + '\n' +
-        '🤝 *Übergabe dabei:* ' + d.uebergabe + '\n' +
-        '📜 *Vollmacht:* ' + d.vollmacht + '\n\n' +
-        '📝 *Bemerkungen:* ' + d.bemerkungen
-    );
-    const phone = d.telefon.replace(/[^0-9+]/g, '');
-    window.open('https://wa.me/' + phone + '?text=' + text, '_blank');
+    // First generate and download the PDF
+    generatePDFBlob().then(({ blob, fileName }) => {
+        // Download PDF first
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = fileName; a.style.display = 'none';
+        document.body.appendChild(a); a.click();
+        setTimeout(() => { document.body.removeChild(a); URL.revokeObjectURL(url); }, 500);
+
+        // Then open WhatsApp
+        const text = encodeURIComponent(buildSummaryText(d, 'whatsapp'));
+        let phone = (d.telefon || '').replace(/[^0-9+]/g, '');
+        // Convert Swiss format to international
+        if (phone.startsWith('0') && !phone.startsWith('00')) phone = '+41' + phone.substring(1);
+        setTimeout(() => {
+            window.open('https://wa.me/' + phone.replace('+', '') + '?text=' + text, '_blank');
+        }, 600);
+    }).catch(() => {
+        alert('PDF konnte nicht erstellt werden. Bitte versuchen Sie es erneut.');
+    });
 }
 </script>
 
